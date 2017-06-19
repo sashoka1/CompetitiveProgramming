@@ -1,0 +1,73 @@
+Suppose we have a superclass and subclass as follows:
+ClassC.java
+
+package com.journaldev.inheritance;
+
+public class ClassC{
+
+	public void methodC(){
+	}
+}
+ClassD.java
+
+package com.journaldev.inheritance;
+
+public class ClassD extends ClassC{
+
+	public int test(){
+		return 0;
+	}
+}
+The above code compiles and works fine but what if ClassC implementation is changed like below:
+
+ClassC.java
+
+package com.journaldev.inheritance;
+
+public class ClassC{
+
+	public void methodC(){
+	}
+
+	public void test(){
+	}
+}
+Notice that test() method already exists in the subclass but the return type is different. Now the ClassD won’t compile and if you are using any IDE, it will suggest you to change the return type in either superclass or subclass.
+
+Now imagine the situation where we have multiple level of class inheritance and superclass is not controlled by us. We will have no choice but to change our subclass method signature or it’s name to remove the compilation error. Also we will have to make change in all the places where our subclass method was getting invoked, so inheritance makes our code fragile.
+
+The above problem will never occur with composition and that makes it more favorable over inheritance.
+
+Another problem with inheritance is that we are exposing all the superclass methods to the client and if our superclass is not properly designed and there are security holes, then even though we take complete care in implementing our class, we get affected by the poor implementation of superclass.
+Composition helps us in providing controlled access to the superclass methods whereas inheritance doesn’t provide any control of the superclass methods, this is also one of the major advantage of composition over inheritance.
+Another benefit with composition is that it provides flexibility in invocation of methods. Our above implementation of ClassC is not optimal and provides compile time binding with the method that will be invoked, with minimal change we can make the method invocation flexible and make it dynamic.
+ClassC.java
+
+package com.journaldev.inheritance;
+
+public class ClassC{
+
+	SuperClass obj = null;
+
+	public ClassC(SuperClass o){
+		this.obj = o;
+	}
+	public void test(){
+		obj.doSomething();
+	}
+	
+	public static void main(String args[]){
+		ClassC obj1 = new ClassC(new ClassA());
+		ClassC obj2 = new ClassC(new ClassB());
+		
+		obj1.test();
+		obj2.test();
+	}
+}
+Output of above program is:
+
+doSomething implementation of A
+doSomething implementation of B
+This flexibility in method invocation is not available in inheritance and boosts the best practice to favor composition over inheritance.
+
+Unit testing is easy in composition because we know what all methods we are using from superclass and we can mock it up for testing whereas in inheritance we depend heavily on superclass and don’t know what all methods of superclass will be used, so we need to test all the methods of superclass, that is an extra work and we need to do it unnecessarily because of inheritance.
